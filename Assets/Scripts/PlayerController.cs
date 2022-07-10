@@ -93,14 +93,20 @@ public class PlayerController : MonoBehaviour
     IEnumerator CrouchCoroutine()
     {
         float _posY = theCamera.transform.localPosition.y;
-
+        int count = 0;
         while(_posY != applyCrouchPosY)
         {
+            count += 1;
             _posY = Mathf.Lerp(_posY,applyCrouchPosY, 0.3f);
             //보간 
             theCamera.transform.localPosition = new Vector3(0,_posY ,0);
+            if(count > 15)
+            {
+                break;
+            }
             yield return null;
         }
+        theCamera.transform.localPosition = new Vector3(0, applyCrouchPosY,0f);
     }
     //다중처리용
 
@@ -118,6 +124,8 @@ public class PlayerController : MonoBehaviour
     }
     private void Jump()
     {
+        if (isCrouch)
+            Crouch();
         myRigid.velocity = transform.up * jumpForce;
     }
 
@@ -135,6 +143,8 @@ public class PlayerController : MonoBehaviour
 
     private void Running()
     {
+        if (isCrouch)
+            Crouch();
         isRun = true;
         applySpeed = runSpeed;
     }
