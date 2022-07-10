@@ -20,6 +20,7 @@ public class GunController : MonoBehaviour
     public bool isFineSightMode = false;
 
 
+
     // 본래 포지션 값.
     private Vector3 originPos;
 
@@ -270,5 +271,10 @@ public class GunController : MonoBehaviour
     {
         audioSource.clip = _clip;
         audioSource.Play();
+    }
+
+    public Gun GetGun()
+    {
+        return currentGun;
     }
 }
