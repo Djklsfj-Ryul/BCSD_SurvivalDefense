@@ -87,9 +87,22 @@ public class PlayerController : MonoBehaviour
             applySpeed = walkSpeed;
             applyCrouchPosY = originPosY;
         }
-        theCamera.transform.localPosition = new Vector3(theCamera.transform.localPosition.x,applyCrouchPosY,theCamera.transform.localPosition.z);
+        StartCoroutine(CrouchCoroutine());
     }
 
+    IEnumerator CrouchCoroutine()
+    {
+        float _posY = theCamera.transform.localPosition.y;
+
+        while(_posY != applyCrouchPosY)
+        {
+            _posY = Mathf.Lerp(_posY,applyCrouchPosY, 0.3f);
+            //보간 
+            theCamera.transform.localPosition = new Vector3(0,_posY ,0);
+            yield return null;
+        }
+    }
+    //다중처리용
 
     private void IsGround()
     {
