@@ -8,15 +8,26 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed;
     //Inspector창에서 값을 수정할 수 있다
     [SerializeField] private float runSpeed;
+    [SerializeField] private float crouchSpeed;
+
+
     private float applySpeed;
 
     [SerializeField] private float jumpForce;
-    private bool isGround = true;
 
 
     //상태 변수
     private bool isRun = false;
+    private bool isCrouch = false;
+    private bool isGround = true;
 
+    //얼만큼 앉을지 결정 변수
+    [SerializeField] private float crouchPosY;
+    private float originPosY;
+    private float applyCrouchPosY;
+
+
+    //땅 착지 여부
     private CapsuleCollider capsuleCollider;
 
     //민감도
@@ -38,6 +49,8 @@ public class PlayerController : MonoBehaviour
         //theCamera = FindObjectOfType<Camera>();
         myRigid = GetComponent<Rigidbody>();
         applySpeed = walkSpeed;
+        originPosY = theCamera.transform.localPosition.y;
+        applyCrouchPosY = originPosY;
     }
 
     // Update is called once per frame
@@ -46,10 +59,37 @@ public class PlayerController : MonoBehaviour
         IsGround();
         TryJump();
         TryRun(); // Move함수 위
+        TryCrouch();
         Move();
         CameraRotation();
         CharacterRotation();
     }
+
+    private void TryCrouch()
+    {
+        if(Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            Crouch();
+        }
+    }
+
+    private void Crouch()
+    {
+        isCrouch = !isCrouch;
+        
+        if(isCrouch)
+        {
+            applySpeed = crouchSpeed;
+            applyCrouchPosY = crouchPosY;
+        }
+        else
+        {
+            applySpeed = walkSpeed;
+            applyCrouchPosY = originPosY;
+        }
+        theCamera.transform.localPosition = new Vector3(theCamera.transform.localPosition.x,applyCrouchPosY,theCamera.transform.localPosition.z);
+    }
+
 
     private void IsGround()
     {
