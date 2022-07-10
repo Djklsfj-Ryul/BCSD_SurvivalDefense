@@ -189,6 +189,6 @@ public class PlayerController : MonoBehaviour
         currentCameraRotationX += _cameraRotationX;
         currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit);
 
-        theCamera.transform.localEulerAngles = new Vector3(currentCameraRotationX, 0f, 0f);
+        theCamera.transform.localEulerAngles = new Vector3(-currentCameraRotationX, 0f, 0f);
     }
 }

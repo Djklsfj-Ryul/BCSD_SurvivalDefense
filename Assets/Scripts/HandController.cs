@@ -27,7 +27,6 @@ public class HandController : MonoBehaviour
         {
             if (!isAttack)
             {
-                Debug.Log("hehe");
                 StartCoroutine(AttackCoroutine());
             }
         }
