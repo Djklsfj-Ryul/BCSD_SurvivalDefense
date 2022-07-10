@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class HandController : MonoBehaviour
 {
-    //현재 장착된 Hand형 타입 무기
-    [SerializeField] private Hand currentHand;
+    // 현재 장착된 Hand형 타입 무기.
+    [SerializeField]
+    private Hand currentHand;
 
-    //공격중?
+    // 공격중??
     private bool isAttack = false;
     private bool isSwing = false;
 
@@ -17,18 +18,21 @@ public class HandController : MonoBehaviour
     void Update()
     {
         TryAttack();
+
     }
+
     private void TryAttack()
     {
-        if (Input.GetButton("Fire1")) ;
+        if (Input.GetButton("Fire1"))
         {
-            if(!isAttack)
+            if (!isAttack)
             {
-                //코루틴 실행
+                Debug.Log("hehe");
                 StartCoroutine(AttackCoroutine());
             }
         }
     }
+
     IEnumerator AttackCoroutine()
     {
         isAttack = true;
@@ -37,10 +41,11 @@ public class HandController : MonoBehaviour
         yield return new WaitForSeconds(currentHand.attackDelayA);
         isSwing = true;
 
-        //공격 활성화 시점
+        StartCoroutine(HitCoroutine());
 
         yield return new WaitForSeconds(currentHand.attackDelayB);
         isSwing = false;
+
 
         yield return new WaitForSeconds(currentHand.attackDelay - currentHand.attackDelayA - currentHand.attackDelayB);
         isAttack = false;
@@ -48,22 +53,23 @@ public class HandController : MonoBehaviour
 
     IEnumerator HitCoroutine()
     {
-        while(isSwing)
+        while (isSwing)
         {
-            if(CheckObject())
+            if (CheckObject())
             {
-                //충돌 됨
+                isSwing = false;
                 Debug.Log(hitInfo.transform.name);
             }
             yield return null;
         }
     }
+
     private bool CheckObject()
     {
-        if(Physics.Raycast(transform.position, transform.forward, out hitInfo, currentHand.range))
+        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, currentHand.range))
         {
             return true;
         }
-        return true;
+        return false;
     }
 }
