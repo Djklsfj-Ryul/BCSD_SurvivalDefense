@@ -17,9 +17,13 @@ public class PlayerController : MonoBehaviour
 
 
     //상태 변수
+    private bool isWalk = false;
     private bool isRun = false;
     private bool isCrouch = false;
     private bool isGround = true;
+
+    //움직임 체크 변수
+    private Vector3 lastPos;
 
     //얼만큼 앉을지 결정 변수
     [SerializeField] private float crouchPosY;
@@ -40,6 +44,8 @@ public class PlayerController : MonoBehaviour
     //필요한 컴포넌트
     [SerializeField] private Camera theCamera;
     private Rigidbody myRigid;
+    private GunController theGunController;
+    private Crosshair theCrosshair;
     //Collider에 물리적 요소를 입힌다
 
     // Start is called before the first frame update
@@ -48,6 +54,10 @@ public class PlayerController : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider>();
         //theCamera = FindObjectOfType<Camera>();
         myRigid = GetComponent<Rigidbody>();
+        theGunController = FindObjectOfType<GunController>();
+        theCrosshair = FindObjectOfType<Crosshair>();
+
+
         applySpeed = walkSpeed;
         originPosY = theCamera.transform.localPosition.y;
         applyCrouchPosY = originPosY;
@@ -172,6 +182,22 @@ public class PlayerController : MonoBehaviour
         myRigid.MovePosition(transform.position + _velocity * Time.deltaTime);
         //
     }
+
+    // 움직임 체크
+    private void MoveCheck()
+    {
+        if (!isRun && !isCrouch && isGround)
+        {
+            if (Vector3.Distance(lastPos, transform.position) >= 0.01f)
+                isWalk = true;
+            else
+                isWalk = false;
+
+            theCrosshair.WalkingAnimation(isWalk);
+            lastPos = transform.position;
+        }
+    }
+
     private void CharacterRotation()
     {
         float _yRotation = Input.GetAxisRaw("Mouse X");
@@ -190,5 +216,21 @@ public class PlayerController : MonoBehaviour
         currentCameraRotationX = Mathf.Clamp(currentCameraRotationX, -cameraRotationLimit, cameraRotationLimit);
 
         theCamera.transform.localEulerAngles = new Vector3(-currentCameraRotationX, 0f, 0f);
+    }
+    public bool GetRun()
+    {
+        return isRun;
+    }
+    public bool GetWalk()
+    {
+        return isWalk;
+    }
+    public bool GetCrouch()
+    {
+        return isCrouch;
+    }
+    public bool GetIsGround()
+    {
+        return isGround;
     }
 }
