@@ -7,6 +7,12 @@ public class AxeController : CloseWeaponController
     // 활성화 여부.
     public static bool isActivate = false;
 
+    private void Start()
+    {
+        WeaponManager.currentWeapon = currentCloseWeapon.GetComponent<Transform>();
+        WeaponManager.currentWeaponAnim = currentCloseWeapon.anim;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -20,6 +26,10 @@ public class AxeController : CloseWeaponController
         {
             if (CheckObject())
             {
+                if (hitInfo.transform.tag == "Rock")
+                {
+                    hitInfo.transform.GetComponent<Rock>().Mining();
+                }
                 isSwing = false;
                 Debug.Log(hitInfo.transform.name);
             }
